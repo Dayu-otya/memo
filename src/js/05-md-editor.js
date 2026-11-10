@@ -244,6 +244,7 @@ function getCaretLineOffset(el) {
 }
 
 function setCaretLineOffset(el, lineIndex, offset) {
+  if (!canRestoreEditorCaret()) return true; // 再描画だけ行い、入力の受け口は動かさない
   const lineNode = el.querySelector(`[data-line="${lineIndex}"]`);
   if (!lineNode) return false;
 

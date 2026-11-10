@@ -50,3 +50,6 @@ getPlainTextFromEditable=()=>"検索語";
 bodyInput.oninput({target:bodyInput});
 `);assert.equal(r.run('notes[0].body'),'題名\n本文');});
 test('all renderer scripts compile',()=>{for(const file of fs.readdirSync(path.join(__dirname,'../src/js')))new vm.Script(fs.readFileSync(path.join(__dirname,'../src/js',file),'utf8'),{filename:file});});
+
+test('note color is applied to the editor background (light and dark values)',()=>{const r=setup();r.document.createElement=()=>({style:{},setAttribute(){},appendChild(){}});r.run('globalThis.__set={};editorView.style.setProperty=(k,v)=>{__set[k]=v};notes[0].color=2;renderEditor();');assert.equal(r.run('__set["--note-bg"]'),'#EAF0F6');assert.equal(r.run('__set["--note-bg-dark"]'),'#222B35');});
+test('delayed re-render must not move the caret into the memo while a dialog or other field is in use',()=>{const r=setup();r.run('modalOverlay.style.display="none";');assert.equal(r.run('canRestoreEditorCaret()'),true);r.run('modalOverlay.style.display="flex";');assert.equal(r.run('canRestoreEditorCaret()'),false);let touched=false;r.document.getSelection=()=>{touched=true;return null;};r.window.getSelection=r.document.getSelection;r.run('setCaretOffset(bodyInput,0);setCaretLineOffset(mdPreview,0,0);');assert.equal(touched,false);});

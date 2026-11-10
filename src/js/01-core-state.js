@@ -1,11 +1,11 @@
 
 
 const TAG_COLORS = [
-  { bg: "#FDF6E3", border: "#E8DCB5", label: "きいろ" },
-  { bg: "#EAF2E9", border: "#C6DBC2", label: "みどり" },
-  { bg: "#EAF0F6", border: "#C3D7E8", label: "あお" },
-  { bg: "#F6EAF0", border: "#E3C3D3", label: "ピンク" },
-  { bg: "#F1EAF6", border: "#D4C3E3", label: "むらさき" },
+  { bg: "#FDF6E3", border: "#E8DCB5", label: "きいろ", bgDark: "#34311F" },
+  { bg: "#EAF2E9", border: "#C6DBC2", label: "みどり", bgDark: "#232E24" },
+  { bg: "#EAF0F6", border: "#C3D7E8", label: "あお", bgDark: "#222B35" },
+  { bg: "#F6EAF0", border: "#E3C3D3", label: "ピンク", bgDark: "#35262E" },
+  { bg: "#F1EAF6", border: "#D4C3E3", label: "むらさき", bgDark: "#2D2537" },
 ];
 
 let notes = [];

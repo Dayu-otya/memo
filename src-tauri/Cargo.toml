@@ -1,6 +1,6 @@
 [package]
 name = "memo-app"
-version = "2.0.0"
+version = "2.0.1"
 description = "使いやすいメモ帳アプリ"
 authors = ["Dayu-otya"]
 license = "MIT"

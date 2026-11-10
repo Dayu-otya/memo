@@ -90,6 +90,7 @@ function getCaretOffset(el) {
 }
 
 function setCaretOffset(el, offset) {
+  if (!canRestoreEditorCaret()) return;
   const sel = window.getSelection();
   if (!sel) return;
   let remaining = offset;

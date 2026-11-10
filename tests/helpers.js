@@ -5,7 +5,7 @@ const { EventEmitter } = require('node:events');
 const root = path.resolve(__dirname, '..');
 function renderer(files = ['01-core-state.js','02-dom.js','03-notes-data.js']) {
   const elements = new Map();
-  const element = () => ({style:{display:'none'}, textContent:'', value:'', innerHTML:'', childNodes:[],
+  const element = () => ({style:{display:'none', setProperty(){}}, textContent:'', value:'', innerHTML:'', childNodes:[],
     classList:{contains:()=>false,add(){},remove(){},toggle(){}}, addEventListener(){},
     appendChild(){}, contains:()=>false, focus(){}, blur(){}, setAttribute(){}, querySelectorAll:()=>[], options:[{}]});
   const document = { getElementById(id){if(!elements.has(id))elements.set(id,element()); return elements.get(id);},

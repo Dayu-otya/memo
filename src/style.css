@@ -599,6 +599,8 @@ kbd.shortcut-key {
   flex: 1;
   display: flex;
   flex-direction: column;
+  /* 長い1行に引き伸ばされて画面の外へはみ出さないようにする(はみ出すと読めず、コピーもできない)。 */
+  min-width: 0;
 }
 
 .empty-state {
@@ -637,6 +639,10 @@ kbd.shortcut-key {
   flex-direction: column;
   min-height: 0;
 }
+
+/* メモごとの色(色の丸で選ぶ)。値は 07-render-ui.js が入れる。 */
+#editorView { background: var(--note-bg, transparent); }
+[data-theme="dark"] #editorView { background: var(--note-bg-dark, transparent); }
 
 .editor-header {
   display: flex;
@@ -808,6 +814,7 @@ kbd.shortcut-key {
 
 .md-preview {
   flex: 1;
+  min-width: 0;
   overflow-y: auto;
   padding: 24px 28px;
   font-size: var(--editor-font-size);
@@ -1184,8 +1191,9 @@ kbd.shortcut-key {
 
 .tag-input-wrap {
   position: relative;
-  flex: 1;
-  min-width: 140px;
+  flex: 0 0 200px;
+  width: 200px;
+  min-width: 0;
 }
 
 .tag-input-wrap .tag-input {

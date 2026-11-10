@@ -94,12 +94,54 @@ try {
     const r = await execAsync(sid, `const done = arguments[arguments.length-1]; updateAPI.checkNow().then(done, e => done(String(e)));`);
     if (process.env.MEMO_E2E_RELEASE) assert.equal(typeof r.ok, "boolean"); // 配布版は実際に確認しに行く
     else assert.deepEqual(r, { ok: false, reason: "dev" });
-    assert.equal(await execAsync(sid, `const done = arguments[arguments.length-1]; updateAPI.getVersion().then(done);`), "2.0.0");
+    assert.equal(await execAsync(sid, `const done = arguments[arguments.length-1]; updateAPI.getVersion().then(done);`), "2.0.1");
   });
   check("PDF 書き出しは Windows 以外では明示的な失敗を返す(ダイアログ取消なら canceled)", async () => {
     // ダイアログは操作できないため、ここでは命令が登録され権限が通ることだけを確かめる
     const r = await execAsync(sid, `const done = arguments[arguments.length-1]; window.__TAURI__.core.invoke("app_version").then(done, e => done("denied:" + e));`);
-    assert.equal(r, "2.0.0");
+    assert.equal(r, "2.0.1");
+  });
+
+  // ---- 2.0.1 の修正(利用者の報告4件)の再発防止 ----
+  const click = async (css) => { const v = await wd("POST", `/session/${sid}/element`, { using: "css selector", value: css }); await wd("POST", `/session/${sid}/element/${Object.values(v)[0]}/click`, {}); };
+  const sendKeys = (text) => wd("POST", `/session/${sid}/actions`, { actions: [{ type: "key", id: "k", actions: [...text].flatMap((c) => [{ type: "keyDown", value: c }, { type: "keyUp", value: c }]) }] });
+  check("メモの色を変えると編集画面の背景色が変わる(明るい表示と暗い表示)", async () => {
+    const bg = async (i) => { await exec(sid, `setColor(getActive().id, ${i});`); await sleep(100); return exec(sid, `return getComputedStyle(editorView).backgroundColor;`); };
+    const light = new Set([await bg(0), await bg(1), await bg(2), await bg(3), await bg(4)]);
+    assert.equal(light.size, 5, "5色が別の背景色になっていない");
+    assert.equal(await bg(1), "rgb(234, 242, 233)");
+    await exec(sid, `document.documentElement.setAttribute("data-theme", "dark");`);
+    assert.equal(await exec(sid, `return getComputedStyle(editorView).backgroundColor;`), "rgb(35, 46, 36)");
+    await exec(sid, `document.documentElement.setAttribute("data-theme", "light");`);
+  });
+  check("マークダウン表示で本文を打った直後にロックの鍵を押しても、パスワード欄に入力できる", async () => {
+    await exec(sid, `const a = getActive(); a.body = ""; a.markdownPreview = true; render();`);
+    await sleep(300);
+    await click("#mdPreview"); await sendKeys("hello"); await sleep(40);
+    await click("#lockToggleBtn"); await sleep(400);
+    assert.equal(await exec(sid, `return document.activeElement.id;`), "modalInput");
+    await sendKeys("pw12"); await sleep(300);
+    assert.equal(await exec(sid, `return modalInput.value;`), "pw12");
+    assert.equal(await exec(sid, `return getActive().body;`), "hello", "パスワードが本文に入った");
+    await exec(sid, `modalCancelBtn.click(); getActive().markdownPreview = false; render();`);
+  });
+  check("長い1行(空白なし)を貼っても編集画面が窓の外へはみ出さない(読めて、すべてコピーできる)", async () => {
+    for (const md of [false, true]) {
+      await exec(sid, `const a = getActive(); a.body = "A".repeat(5000); a.markdownPreview = ${md}; render();`);
+      await sleep(400);
+      const r = await exec(sid, `const e = document.getElementById(${md} ? "mdPreview" : "bodyInput"); return { right: e.getBoundingClientRect().right, inner: window.innerWidth };`);
+      assert.ok(r.right <= r.inner + 1, `${md ? "マークダウン" : "通常"}表示がはみ出している: ${JSON.stringify(r)}`);
+    }
+    await exec(sid, `getActive().markdownPreview = false; render();`);
+  });
+  check("タグ入力欄の横幅は窓の大きさによらず固定", async () => {
+    const w = () => exec(sid, `return Math.round(document.getElementById("tagInput").getBoundingClientRect().width);`);
+    const a = await w();
+    await wd("POST", `/session/${sid}/window/rect`, { width: 1500, height: 800 }).catch(() => {});
+    await sleep(400);
+    const b = await w();
+    assert.equal(a, 200);
+    assert.equal(b, 200);
   });
 
   for (const [name, fn] of results) {

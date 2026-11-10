@@ -1,4 +1,4 @@
-メモ帳 2.0.0(Tauri版)
+メモ帳 2.0.1(Tauri版)
 
 Electron製「メモ帳」1.0.6 を、機能を変えずに Tauri 2 へ載せ替えた版です。
 画面(src/)は現行のまま使い、Electron のメイン処理(main.js・storage.js)を Rust(src-tauri/src)へ一対一で移しました。

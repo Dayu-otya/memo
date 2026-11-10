@@ -370,6 +370,11 @@ function renderEditor() {
 
   lastRenderedBodyId = active.id;
 
+  // メモの色を、編集画面全体の背景へ反映する(明るい表示と暗い表示で別の色を使う)。
+  const noteColor = TAG_COLORS[active.color] || TAG_COLORS[0];
+  editorView.style.setProperty("--note-bg", noteColor.bg);
+  editorView.style.setProperty("--note-bg-dark", noteColor.bgDark);
+
   colorDots.innerHTML = "";
   TAG_COLORS.forEach((c, idx) => {
     const dot = document.createElement("button");

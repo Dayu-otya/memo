@@ -124,3 +124,9 @@ function isTextEntryElement(target) {
 function isNonMemoTextEntryFocused() {
   return isTextEntryElement(document.activeElement) && !isMemoEditorElement(document.activeElement);
 }
+
+// 入力窓(パスワードの設定など)や本文以外の入力欄を使っている間は、
+// 遅れて動く再描画がメモ本文へ入力位置(と入力の受け口)を戻してはいけない。
+function canRestoreEditorCaret() {
+  return modalOverlay.style.display === "none" && !isNonMemoTextEntryFocused();
+}
