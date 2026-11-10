@@ -1,0 +1,30 @@
+[[set]]
+identifier = "allow-app-commands"
+description = "メモ帳の画面が使う25本の渡し口と、終了前保存の返事を許す"
+permissions = [
+  "allow-notes-load",
+  "allow-notes-save",
+  "allow-notes-status",
+  "allow-notes-autosave",
+  "allow-notes-check-autosave",
+  "allow-notes-discard-autosave",
+  "allow-settings-load",
+  "allow-settings-save",
+  "allow-backup-checkpoint",
+  "allow-backup-manual",
+  "allow-backup-list-auto",
+  "allow-backup-restore-auto",
+  "allow-backup-restore-from-file",
+  "allow-notes-export",
+  "allow-notes-export-all-markdown",
+  "allow-notes-import-markdown",
+  "allow-shell-open-external",
+  "allow-crypto-encrypt",
+  "allow-crypto-decrypt",
+  "allow-crypto-hash-password",
+  "allow-crypto-verify-password",
+  "allow-update-check-now",
+  "allow-update-install-now",
+  "allow-app-version",
+  "allow-app-close-after-flush",
+]

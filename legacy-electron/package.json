@@ -1,0 +1,50 @@
+{
+  "name": "memo-app",
+  "version": "1.0.6",
+  "description": "使いやすいメモ帳アプリ",
+  "main": "main.js",
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Dayu-otya/memo.git"
+  },
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --publish never",
+    "release": "electron-builder --publish always",
+    "test": "node --test tests/*.test.js"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "dependencies": {
+    "electron-updater": "^6.3.0"
+  },
+  "build": {
+    "appId": "com.dayuotya.memo",
+    "productName": "メモ帳",
+    "win": {
+      "target": "nsis",
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**/*",
+      "storage.js"
+    ],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Dayu-otya",
+        "repo": "memo"
+      }
+    ]
+  }
+}

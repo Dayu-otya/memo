@@ -1,0 +1,12 @@
+{
+  "theme": "dark",
+  "fontSize": 18,
+  "folders": [
+    {
+      "id": "f-1",
+      "name": "私用",
+      "extra": true
+    }
+  ],
+  "zKey": "keep"
+}

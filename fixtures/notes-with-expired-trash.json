@@ -1,0 +1,11 @@
+[
+  {
+    "id": "keep",
+    "body": "a"
+  },
+  {
+    "id": "old",
+    "body": "b",
+    "trashedAt": 1
+  }
+]

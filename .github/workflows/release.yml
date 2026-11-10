@@ -1,0 +1,44 @@
+# 公開用。v で始まるタグ(例: v2.0.0)を押すと、Windows 用の導入プログラムと更新情報(latest.json)を
+# 下書きのリリースとして GitHub に置く。公開は内容を確かめてから手で行う(計画書 第6節4)。
+name: release
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+      - run: npm ci
+      - run: npm test
+      - run: cargo test --locked --manifest-path src-tauri/Cargo.toml
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # 更新の署名鍵。docs/updater-signing-key-guide.md を参照。公開前に必ず設定する。
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: 'メモ帳 ${{ github.ref_name }}'
+          releaseBody: 'CHANGELOG を参照してください。'
+          # 既定の「npm run tauri build」は package.json に tauri 命令が無く失敗するため、npx で直接呼ぶ。
+          tauriScript: npx tauri
+          releaseDraft: true
+          prerelease: false
+          includeUpdaterJson: true
+          # 製品名「メモ帳」は日本語のため、GitHub 上のファイル名は英数字にする(現行版も memo-app-setup-x.y.z.exe だった)。
+          # 下書きで実際のファイル名と latest.json の URL が一致することを確かめてから公開する。
+          assetNamePattern: 'memo-app_[version]_[arch][setup][ext]'
